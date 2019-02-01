@@ -33,7 +33,7 @@ class WebpackLoader(object):
                     'Error reading {0}. Are you sure webpack has generated '
                     'the file and the path is correct?'.format(
                         self.config['STATS_FILE']))
-        else if 'STATS_URL' in self.config:
+        elif 'STATS_URL' in self.config:
             try:
                 r = requests.get(self.config['STATS_URL'])
             except requests.exceptions.RequestException:
