@@ -118,6 +118,11 @@ WEBPACK_LOADER = {
         'CACHE': False,
         'BUNDLE_DIR_NAME': 'bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-app2.json'),
+    },
+    'APP3': {
+        'CACHE': False,
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_URL': "http://example.testing.url.internal/webpack-stats.json",
     }
 }
 
