@@ -5,6 +5,8 @@ from subprocess import call
 from threading import Thread
 
 import django
+import requests
+
 from django.conf import settings
 from django.test import RequestFactory, TestCase
 from django.views.generic.base import TemplateView
@@ -21,6 +23,7 @@ from webpack_loader.utils import get_loader
 
 BUNDLE_PATH = os.path.join(settings.BASE_DIR, 'assets/bundles/')
 DEFAULT_CONFIG = 'DEFAULT'
+APP3 = 'APP3'
 
 
 class LoaderTestCase(TestCase):
@@ -189,6 +192,18 @@ class LoaderTestCase(TestCase):
             ).format(stats_file)
             self.assertIn(expected, str(e))
 
+    def test_bad_stats_url(self):
+        stats_url = "http://example.testing.url.internal/webpack-stats.json"
+        try:
+            get_loader(APP3).get_assets()
+        except requests.exceptions.RequestException as e:
+            expected = (
+                'Error downloading {0}. Are you sure the URL '
+                'is correct and your internet connection is '
+                'functioning?'
+            ).format(stats_url)
+            self.assertIn(expected, str(e))
+
     def test_timeouts(self):
         with self.settings(DEBUG=True):
             with open(
@@ -216,7 +231,7 @@ class LoaderTestCase(TestCase):
             ), str(e))
 
     def test_request_blocking(self):
-        # FIXME: This will work 99% time but there is no garauntee with the
+        # FIXME: This will work 99% time but there is no guarantee with the
         # 4 second thing. Need a better way to detect if request was blocked on
         # not.
         wait_for = 3
