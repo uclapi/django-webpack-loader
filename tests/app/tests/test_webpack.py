@@ -196,7 +196,7 @@ class LoaderTestCase(TestCase):
         stats_url = "http://example.testing.url.com/webpack-stats.json"
         try:
             get_loader(APP3).get_assets()
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             expected = (
                 'Error downloading {0}. Are you sure the URL '
                 'is correct and your internet connection is '
