@@ -2,7 +2,8 @@ language: python
 sudo: false
 # command to install dependencies
 before_install: "cd tests"
-install: travis_retry pip install 'tox<3.0' coveralls
+install:
+  - travis_retry pip install 'tox<3.0' coveralls
 # command to run tests
 script:
   - npm install
