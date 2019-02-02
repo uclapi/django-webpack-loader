@@ -122,7 +122,7 @@ WEBPACK_LOADER = {
     'APP3': {
         'CACHE': False,
         'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_URL': "http://example.testing.url.internal/webpack-stats.json",
+        'STATS_URL': "http://example.testing.url.com/webpack-stats.json",
     }
 }
 

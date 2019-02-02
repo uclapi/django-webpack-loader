@@ -193,7 +193,7 @@ class LoaderTestCase(TestCase):
             self.assertIn(expected, str(e))
 
     def test_bad_stats_url(self):
-        stats_url = "http://example.testing.url.internal/webpack-stats.json"
+        stats_url = "http://example.testing.url.com/webpack-stats.json"
         try:
             get_loader(APP3).get_assets()
         except requests.exceptions.RequestException as e:
