@@ -3,7 +3,6 @@ sudo: false
 # command to install dependencies
 before_install: "cd tests"
 install:
-  - pip install -r requirements-dev.txt
   - travis_retry pip install 'tox<3.0' coveralls
 # command to run tests
 script:
