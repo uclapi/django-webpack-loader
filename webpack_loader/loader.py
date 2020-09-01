@@ -7,21 +7,16 @@ import requests
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from .exceptions import (
-    WebpackError,
-    WebpackLoaderBadStatsError,
-    WebpackLoaderTimeoutError,
-    WebpackBundleLookupError
-)
-from .config import load_config
+from .exceptions import (WebpackBundleLookupError, WebpackError,
+                         WebpackLoaderBadStatsError, WebpackLoaderTimeoutError)
 
 
 class WebpackLoader(object):
     _assets = {}
 
-    def __init__(self, name='DEFAULT'):
+    def __init__(self, name, config):
         self.name = name
-        self.config = load_config(self.name)
+        self.config = config
 
     def _load_assets(self):
         if 'STATS_URL' in self.config:

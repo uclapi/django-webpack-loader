@@ -1,7 +1,7 @@
 # django-webpack-loader
 
 [![Join the chat at https://gitter.im/owais/django-webpack-loader](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/owais/django-webpack-loader?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/owais/django-webpack-loader.svg?branch=master)](https://travis-ci.org/owais/django-webpack-loader)
+[![Build Status](https://circleci.com/gh/owais/django-webpack-loader/tree/master.svg?style=svg)](https://circleci.com/gh/owais/django-webpack-loader/tree/master)
 [![Coverage Status](https://coveralls.io/repos/owais/django-webpack-loader/badge.svg?branch=master&service=github)](https://coveralls.io/github/owais/django-webpack-loader?branch=master)
 
 <br>
@@ -90,7 +90,8 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
-        'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+        'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
     }
 }
 ```
@@ -125,6 +126,8 @@ If the bundle generates a file called `main-cf4b5fab6e00a404e0c7.js` and your ST
 ```html
 <script type="text/javascript" src="/static/output/bundles/main-cf4b5fab6e00a404e0c7.js"/>
 ```
+
+**NOTE:** If your webpack config outputs the bundles at the root of your `staticfiles` dir, then `BUNDLE_DIR_NAME` should be an empty string `''`, not `'/'`. 
 
 <br>
 
@@ -166,6 +169,40 @@ and your webpack config is located at `/home/src/webpack.config.js`, then the va
 
 <br>
 
+#### LOADER_CLASS
+
+`LOADER_CLASS` is the fully qualified name of a python class as a string that holds the custom webpack loader.
+This is where behavior can be customized as to how the stats file is loaded. Examples include loading the stats file
+from a database, cache, external url, etc. For convenience, `webpack_loader.loader.WebpackLoader` can be extended;
+The `load_assets` method is likely where custom behavior will be added. This should return the stats file as an object.
+
+Here's a simple example of loading from an external url:
+
+```py
+# in app.module
+import requests
+from webpack_loader.loader import WebpackLoader
+
+class ExternalWebpackLoader(WebpackLoader):
+
+  def load_assets(self):
+    url = self.config['STATS_URL']
+    return requests.get(url).json()
+
+
+# in app.settings
+WEBPACK_LOADER = {
+  'DEFAULT': {
+      'CACHE': False,
+      'BUNDLE_DIR_NAME': 'bundles/',
+      'LOADER_CLASS': 'app.module.ExternalWebpackLoader',
+      # Custom config setting made available in WebpackLoader's self.config
+      'STATS_URL': 'https://www.test.com/path/to/stats/',
+  }
+}
+```
+
+<br>
 
 ## Usage
 <br>
@@ -250,7 +287,7 @@ WEBPACK_LOADER = {
     {% render_bundle 'main' config='DASHBOARD' extension='css' %}
 
     <!-- add some extra attributes to the tag -->
-    {% render_bundle 'main' 'js' 'DEFAULT' attrs='async chatset="UTF-8"'%}
+    {% render_bundle 'main' 'js' 'DEFAULT' attrs='async charset="UTF-8"'%}
   </body>
 </head>
 ```

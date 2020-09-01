@@ -4,3 +4,4 @@ django-jinja==2.2.1
 django-jinja2==0.1
 requests==2.21.0
 unittest2==1.1.0
+wheel==0.30.0
